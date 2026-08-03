@@ -1,0 +1,6 @@
+*.bak
+*.bak.*
+today.json
+node_modules/
+.vercel/
+__pycache__/
