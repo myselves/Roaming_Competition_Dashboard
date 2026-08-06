@@ -23,11 +23,20 @@
   남기며, 보고의 '확인 범위'에 실패 브랜드와 사유를 명시한다. 전체 작업은
   중단하지 않는다.
 - 정확도 가드(`roaming-guard.mjs`)와 HIST 생성기(`hist_snapshot.py`),
-  폰트 서브셋(`subset_font.py`)은 스킬 assets의 것을 실행한다
-  (`~/.claude/skills/roaming-dashboard-update/assets/`). 폰트 서브셋은
-  반드시 마스터 폰트(pretendard-full.woff2)에서 새로 뜨며, 데이터 편집이
-  모두 끝난 뒤 마지막에 1회 실행한다. 서브셋 후 index.html 동기화를 잊지
-  말 것.
+  폰트 서브셋(`subset_font.py`)은 스킬 assets의 것을 실행한다. **경로는
+  하드코딩하지 말고** 매 회차 아래로 해석한다 (스킬 설치 경로에 회전하는
+  UUID 2단이 들어 있어 고정 경로는 반드시 낡는다):
+
+  ```bash
+  SK=$(ls -dt "$HOME/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/"*/*/skills/roaming-dashboard-update/assets 2>/dev/null | head -1)
+  ```
+
+  이후 `node "$SK/roaming-guard.mjs" …`, `python3 "$SK/subset_font.py" …`,
+  `hist_snapshot.py`는 `$SK`에서 import해 쓴다. `$SK`가 비면 스킬이 설치돼
+  있지 않은 것이므로 갱신을 중단하고 보고한다.
+  폰트 서브셋은 반드시 마스터 폰트(`$SK/pretendard-full.woff2`)에서 새로
+  뜨며(subset_font.py가 자동 처리), 데이터 편집이 모두 끝난 뒤 마지막에 1회
+  실행한다. 서브셋 후 index.html 동기화를 잊지 말 것.
 - 클라우드(웹) 세션에서는 수집 사이트가 네트워크 정책으로 차단(403 CONNECT
   거부)되고 Claude in Chrome도 쓸 수 없다. 웹 세션에서는 데이터를 갱신하지
   말고 기존 파일을 그대로 둔다.
